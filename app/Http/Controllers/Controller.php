@@ -10,12 +10,12 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
 
-    public function returnJson( $status, $data = null, $msg = '' ) {
+    public function returnJson( $status, $message = '', $data = null,$errors = []) {
         return response()->json([
             'status' => $status,
+            'message' => $message,
             'data' => $data,
-            'msg' => $msg,
+            'errors' => $errors,
         ]);
     }
-
 }
