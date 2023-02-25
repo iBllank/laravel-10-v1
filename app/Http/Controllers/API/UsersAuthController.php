@@ -4,26 +4,15 @@ namespace App\Http\Controllers\API;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\UserLoginRequest;
 
 class UsersAuthController extends Controller
 {
 
-    public function userLogin(Request $request)
+    public function userLogin(UserLoginRequest $request)
     {
-        $rules = [
-            'email' => 'required|email|exists:users',
-            'password' => 'required',
-        ];
-
-        $validator = Validator::make($request->all(), $rules);
-        if($validator->fails())
-            return $this->returnJson(0,'Validation error',null,$validator->errors());
-
         if(!Auth::attempt($request->only(['email', 'password'])))
             return $this->returnJson(0,'Auth Failure');
 

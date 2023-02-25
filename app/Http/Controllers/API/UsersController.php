@@ -4,10 +4,9 @@ namespace App\Http\Controllers\API;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Http\RedirectResponse;
+use App\Http\Requests\UserStoreRequest;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
 
@@ -25,35 +24,14 @@ class UsersController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(UserStoreRequest $request)
     {
-        $rules = [
-            'name' => 'required|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => [
-                'required',
-                Password::min(8)
-                    ->letters()
-                    ->mixedCase()
-                    ->numbers()
-                    ->symbols()
-                    ->uncompromised()
-            ],
-            'password_confirmation' => 'required|same:password'
-          ];
-
-          $validator = Validator::make($request->all(), $rules);
-          if($validator->fails())
-                return $this->returnJson(0,'Validation error',null,$validator->errors());
-
           $newUser = new User([
             'name' => $request->get('name'),
             'email' => $request->get('email'),
             'password' => Hash::make($request->get('password')),
           ]);
-
           $newUser->save();
-
           return $this->returnJson(1,'Request successful',$newUser);
     }
 
@@ -77,6 +55,7 @@ class UsersController extends Controller
         if(!$user)
             return $this->returnJson(0,'User not found');
 
+        //left as a refrence
         $rules = [
           'name' => 'required|max:255',
         ];
@@ -84,12 +63,10 @@ class UsersController extends Controller
         $validator = Validator::make($request->all(), $rules);
         if($validator->fails())
               return $this->returnJson(0,'Validation error',null,$validator->errors());
-
+        //end of refrence
 
         $user->name = $request->get('name');
-
         $user->save();
-
         return $this->returnJson(1,'Request successful',$user);
     }
 

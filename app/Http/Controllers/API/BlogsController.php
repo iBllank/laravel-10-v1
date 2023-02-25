@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Models\Blogs;
 use Illuminate\Http\Request;
+use App\Http\Requests\BlogsRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
@@ -21,19 +22,9 @@ class BlogsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(BlogsRequest $request)
     {
-        $rules = [
-            'title' => 'required|max:255',
-            'content' => 'required'
-        ];
-
-        $validator = Validator::make($request->all(),$rules);
-        if($validator->fails())
-            return $this->returnJson(0,'Validation error',null,$validator->errors());
-
         $newBlog = $request->user()->blogs()->create($request->only(['title','content']));
-
         return $this->returnJson(1,'Request successful',$newBlog);
     }
 
@@ -51,23 +42,13 @@ class BlogsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(BlogsRequest $request, string $id)
     {
-        $rules = [
-            'title' => 'required|max:255',
-            'content' => 'required'
-        ];
-
-        $validator = Validator::make($request->all(),$rules);
-        if($validator->fails())
-            return $this->returnJson(0,'Validation error',null,$validator->errors());
-
         $blog = Blogs::find($id);
         if(!$blog)
            return $this->returnJson(0,'Blog not found');
 
         $blog->update($request->only(['title','content']));
-
         return $this->returnJson(1,'Request successful',$blog);
     }
 
