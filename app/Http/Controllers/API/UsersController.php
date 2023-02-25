@@ -46,7 +46,6 @@ class UsersController extends Controller
           if($validator->fails())
                 return $this->returnJson(0,'Validation error',null,$validator->errors());
 
-
           $newUser = new User([
             'name' => $request->get('name'),
             'email' => $request->get('email'),

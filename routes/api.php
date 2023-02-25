@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\BlogsController;
 use App\Http\Controllers\API\UsersController;
 use App\Http\Controllers\API\UsersAuthController;
 
@@ -41,6 +42,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         'update',
         'destroy'
     ]);
+
+    Route::apiResource('blogs', BlogsController::class);
 
 });
 
