@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Validator;
 
 class BlogsController extends Controller
 {
+
+    //Test
     /**
      * Display a listing of the resource.
      */
