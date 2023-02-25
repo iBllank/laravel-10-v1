@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Http\Middleware\langApi;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\BlogsController;
 use App\Http\Controllers\API\UsersController;
@@ -24,26 +25,27 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 */
 
-// REGISTER AND LOGIN + SANCTUM TOKEN
-Route::resource('users', UsersController::class)->only([
-    'store'
-]);
-Route::post('userLogin',[UsersAuthController::class,'userLogin']);
+Route::middleware([langApi::class])->group(function () {
 
+    // REGISTER AND LOGIN + SANCTUM TOKEN
+    Route::resource('users', UsersController::class)->only(['store']);
+    Route::post('userLogin',[UsersAuthController::class,'userLogin']);
 
-//LARAVEL SANCTUM
-Route::middleware(['auth:sanctum'])->group(function () {
+    //LARAVEL SANCTUM
+    Route::middleware(['auth:sanctum'])->group(function () {
 
-    Route::post('userRevokeCurrentToken',[UsersAuthController::class,'userRevokeCurrentToken']);
+        Route::post('userRevokeCurrentToken',[UsersAuthController::class,'userRevokeCurrentToken']);
 
-    Route::resource('users', UsersController::class)->only([
-        'index',
-        'show',
-        'update',
-        'destroy'
-    ]);
+        Route::resource('users', UsersController::class)->only([
+            'index',
+            'show',
+            'update',
+            'destroy'
+        ]);
 
-    Route::apiResource('blogs', BlogsController::class);
+        Route::apiResource('blogs', BlogsController::class);
+
+    });
 
 });
 

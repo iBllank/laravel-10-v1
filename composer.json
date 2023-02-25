@@ -32,7 +32,8 @@
             "Tests\\": "tests/"
         },
         "files": [
-            "app/Helpers/functions.php"
+            "app/Helpers/functions.php",
+            "app/Constants/Constants.php"
         ]
     },
     "scripts": {

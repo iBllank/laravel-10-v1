@@ -18,7 +18,7 @@ class UsersController extends Controller
     public function index()
     {
         $data = User::all();
-        return $this->returnJson(1,'Request successful',$data);
+        return $this->returnJson(1,__('messages.success'),$data);
     }
 
     /**
@@ -32,7 +32,7 @@ class UsersController extends Controller
             'password' => Hash::make($request->get('password')),
           ]);
           $newUser->save();
-          return $this->returnJson(1,'Request successful',$newUser);
+          return $this->returnJson(1,__('messages.success'),$newUser);
     }
 
     /**
@@ -42,8 +42,8 @@ class UsersController extends Controller
     {
         $user = User::find($id);
         if(!$user)
-            return $this->returnJson(0,'User not found');
-        return $this->returnJson(1,'Request successful',$user);
+            return $this->returnJson(0,__('messages.attr_not_found',['attr'=>__('messages.user')]));
+        return $this->returnJson(1,__('messages.success'),$user);
     }
 
     /**
@@ -53,7 +53,7 @@ class UsersController extends Controller
     {
         $user = User::find($id);
         if(!$user)
-            return $this->returnJson(0,'User not found');
+            return $this->returnJson(0,__('messages.attr_not_found',['attr'=>__('messages.user')]));
 
         //left as a refrence
         $rules = [
@@ -67,7 +67,7 @@ class UsersController extends Controller
 
         $user->name = $request->get('name');
         $user->save();
-        return $this->returnJson(1,'Request successful',$user);
+        return $this->returnJson(1,__('messages.success'),$user);
     }
 
     /**
@@ -77,9 +77,9 @@ class UsersController extends Controller
     {
         $user = User::find($id);
         if(!$user)
-            return $this->returnJson(0,'User not found');
+            return $this->returnJson(0,__('messages.attr_not_found',['attr'=>__('messages.user')]));
         $user->delete();
-        return $this->returnJson(1,'Request successful',$user::all());
+        return $this->returnJson(1,__('messages.success'),$user::all());
     }
 
 

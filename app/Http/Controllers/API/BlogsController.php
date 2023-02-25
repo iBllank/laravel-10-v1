@@ -16,7 +16,7 @@ class BlogsController extends Controller
     public function index()
     {
         $blogs = Blogs::all();
-        return $this->returnJson(1,'Request successful',$blogs);
+        return $this->returnJson(1,__('messages.success'),$blogs);
     }
 
     /**
@@ -25,7 +25,7 @@ class BlogsController extends Controller
     public function store(BlogsRequest $request)
     {
         $newBlog = $request->user()->blogs()->create($request->only(['title','content']));
-        return $this->returnJson(1,'Request successful',$newBlog);
+        return $this->returnJson(1,__('messages.success'),$newBlog);
     }
 
     /**
@@ -35,8 +35,8 @@ class BlogsController extends Controller
     {
         $blog = Blogs::find($id);
         if(!$blog)
-           return $this->returnJson(0,'Blog not found');
-        return $this->returnJson(1,'Request successful',$blog);
+           return $this->returnJson(0,__('messages.attr_not_found',['attr'=>__('messages.blog')]));
+        return $this->returnJson(1,__('messages.success'),$blog);
     }
 
     /**
@@ -46,10 +46,10 @@ class BlogsController extends Controller
     {
         $blog = Blogs::find($id);
         if(!$blog)
-           return $this->returnJson(0,'Blog not found');
+           return $this->returnJson(0,__('messages.attr_not_found',['attr'=>__('messages.blog')]));
 
         $blog->update($request->only(['title','content']));
-        return $this->returnJson(1,'Request successful',$blog);
+        return $this->returnJson(1,__('messages.success'),$blog);
     }
 
     /**
@@ -59,9 +59,9 @@ class BlogsController extends Controller
     {
         $blog = Blogs::find($id);
         if(!$blog)
-           return $this->returnJson(0,'Blog not found');
+           return $this->returnJson(0,__('messages.attr_not_found',['attr'=>__('messages.blog')]));
 
         $blog->delete();
-        return $this->returnJson(1,'Blog Deleted');
+        return $this->returnJson(0,__('messages.attr_deleted',['attr'=>__('messages.blog')]));
     }
 }
