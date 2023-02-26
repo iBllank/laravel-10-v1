@@ -5,10 +5,9 @@ namespace App\Http\Controllers\API;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\UserStoreRequest;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rules\Password;
 
 class UsersController extends Controller
 {
@@ -17,8 +16,8 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $data = User::all();
-        return $this->returnJson(1,__('messages.success'),$data);
+        return UserResource::collection(User::paginate(10));
+        // return $this->returnJson(1,__('messages.success'),$users);
     }
 
     /**
@@ -26,61 +25,48 @@ class UsersController extends Controller
      */
     public function store(UserStoreRequest $request)
     {
-          $newUser = new User([
+        $newUser = new User([
             'name' => $request->get('name'),
             'email' => $request->get('email'),
             'password' => Hash::make($request->get('password')),
-          ]);
-          $newUser->save();
-          return $this->returnJson(1,__('messages.success'),$newUser);
+        ]);
+        $newUser->save();
+        $newUser = new UserResource($newUser);
+        return $this->returnJson(1,__('messages.success'),$newUser);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(User $user)
     {
-        $user = User::find($id);
-        if(!$user)
-            return $this->returnJson(0,__('messages.attr_not_found',['attr'=>__('messages.user')]));
+        $user = new UserResource($user);
         return $this->returnJson(1,__('messages.success'),$user);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, User $user)
     {
-        $user = User::find($id);
-        if(!$user)
-            return $this->returnJson(0,__('messages.attr_not_found',['attr'=>__('messages.user')]));
-
         //left as a refrence
-        $rules = [
-          'name' => 'required|max:255',
-        ];
-
-        $validator = Validator::make($request->all(), $rules);
-        if($validator->fails())
-              return $this->returnJson(0,'Validation error',null,$validator->errors());
+        $request->validate([
+            'name' => 'required|max:255',
+        ]);
         //end of refrence
 
         $user->name = $request->get('name');
         $user->save();
+        $user = new UserResource($user);
         return $this->returnJson(1,__('messages.success'),$user);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(User $user)
     {
-        $user = User::find($id);
-        if(!$user)
-            return $this->returnJson(0,__('messages.attr_not_found',['attr'=>__('messages.user')]));
-        $user->delete();
-        return $this->returnJson(1,__('messages.success'),$user::all());
+        $delUser = $user->delete();
+        return $this->returnJson(1,__('messages.success'));
     }
-
-
 }
